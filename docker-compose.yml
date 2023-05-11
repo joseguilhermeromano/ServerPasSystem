@@ -1,0 +1,47 @@
+version: '3' 
+networks:
+    fPass:
+      driver: bridge
+      ipam:
+        driver: default
+        config:
+          - subnet: 10.0.21.0/29
+services:
+    f_pass:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                buildno: 1
+        container_name: f-pass
+        restart: unless-stopped
+        extra_hosts:
+            - "host.docker.internal: 172.31.242.16"
+        ports:
+            - 80:80/tcp
+        tty: true
+        volumes:
+            - ../code:/var/www/html
+            - ./web/000-default.conf:/etc/apache2/sites-available/000-default.conf
+            - ./web/apache2.conf/:/etc/apache2/apache2.conf
+            - ./web/php.ini/:/usr/local/etc/php/php.ini
+        networks:
+            fPass:
+                ipv4_address: 10.0.21.2
+    db:
+        image: mysql:5.7.22
+        command: --innodb-use-native-aio=0
+        ports: 
+            - "3306:3306"
+        volumes:
+            - ./db/data:/var/lib/mysql
+        environment: 
+            MYSQL_DATABASE: f_pass
+            MYSQL_ROOT: root
+            MYSQL_ROOT_PASSWORD: 1q2w3e4r
+            MYSQL_PASSWORD: 1q2w3e4r
+        restart:
+            unless-stopped
+        networks:
+            fPass:
+                ipv4_address: 10.0.21.3
