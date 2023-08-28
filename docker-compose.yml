@@ -16,7 +16,7 @@ services:
         container_name: f-pass
         restart: unless-stopped
         extra_hosts:
-            - "host.docker.internal: 172.31.242.16"
+            - "host.docker.internal: 172.31.52.84"
         ports:
             - 80:80/tcp
         tty: true
@@ -29,14 +29,15 @@ services:
             fPass:
                 ipv4_address: 10.0.21.2
     db:
-        image: mysql:5.7.22
-        command: --innodb-use-native-aio=0
+        image: mysql:8.1
+        command: --default-authentication-plugin=mysql_native_password
         ports: 
             - "3306:3306"
         volumes:
             - ./db/data:/var/lib/mysql
         environment: 
             MYSQL_DATABASE: f_pass
+            MYSQL_ROOT_HOST: "%"
             MYSQL_ROOT: root
             MYSQL_ROOT_PASSWORD: 1q2w3e4r
             MYSQL_PASSWORD: 1q2w3e4r
