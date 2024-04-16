@@ -16,7 +16,7 @@ services:
         container_name: f-pass
         restart: unless-stopped
         extra_hosts:
-            - "host.docker.internal: 172.31.52.84"
+            - "host.docker.internal:host-gateway"
         ports:
             - 80:80/tcp
         tty: true
@@ -28,6 +28,9 @@ services:
         networks:
             fPass:
                 ipv4_address: 10.0.21.2
+        environment:
+            XDEBUG_MODE: debug
+            XDEBUG_SESSION: VSCODE
     db:
         image: mysql:8.1
         command: --default-authentication-plugin=mysql_native_password

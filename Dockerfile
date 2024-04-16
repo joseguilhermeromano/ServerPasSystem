@@ -15,13 +15,8 @@ RUN docker-php-ext-install gd
 RUN docker-php-ext-install -j$(nproc) gd
 
 RUN docker-php-ext-install opcache
-RUN yes | pecl install xdebug-3.1.6 \
-    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.mode=debug,develop" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.discover_client_host=0" >> /usr/local/etc/php/conf.d/xdebug.ini
-
+RUN yes | pecl install xdebug-3.1.6 
+COPY ./conf/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl
 RUN docker-php-ext-install imap pdo_mysql pdo bcmath intl simplexml zip
 
